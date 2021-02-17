@@ -19,16 +19,10 @@ data = data.query("type == 'conventional' and region == 'Albany'")
 data["Date"] = pd.to_datetime(data["Date"], format="%Y-%m-%d")
 data.sort_values("Date", inplace=True)
 
-external_stylesheets = [
-    {
-        "href": "https://fonts.googleapis.com/css2?family=Lato:wght@400;700&ddisplay=swap",
-        "rel": "stylesheet",
-    },
-]
 
-app = dash.Dash(__name__,external_stylesheets=external_stylesheets)
-app.title = "The Challenge"
+app = dash.Dash(__name__)
 server = app.server
+app.title = "The Challenge"
 
 app.layout = html.Div(
     children=[
