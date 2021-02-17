@@ -2,6 +2,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
+import plotly.express as px
 import gpxpy
 
 gpx_file = open('skitur.gpx', 'r')
@@ -10,6 +11,8 @@ gps_data = gpx.tracks[0].segments[0].points
 df = pd.DataFrame(columns=['lon', 'lat', 'alt', 'time'])
 for point in gps_data:
     df = df.append({'lon': point.longitude, 'lat' : point.latitude, 'alt' : point.elevation, 'time' : point.time}, ignore_index=True)
+
+fig = px.line_geo(lat=df["lat"], lon=df["lon"], projection="orthographic")
 
 data = pd.read_csv("avocado.csv")
 data = data.query("type == 'conventional' and region == 'Albany'")
@@ -38,16 +41,7 @@ app.layout = html.Div(
             },
         ),
         dcc.Graph(
-            figure={
-                "data": [
-                    {
-                        "x": data["Date"],
-                        "y": data["Total Volume"],
-                        "type": "lines",
-                    },
-                ],
-                "layout": {"title": "Avocados Sold"},
-            },
+            figure=fig,
         ),
     ]
 )
