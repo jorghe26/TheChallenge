@@ -13,7 +13,7 @@ server = app.server
 
 app.layout = html.Div(
     children=[
-        html.H1(children="Avocado Analytics",),
+        html.H1(children="The Challenge",),
         html.P(
             children="Jørgen og Eivinds bidrag til The Challenge",
         ),
