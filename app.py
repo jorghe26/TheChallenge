@@ -15,9 +15,7 @@ app.layout = html.Div(
     children=[
         html.H1(children="Avocado Analytics",),
         html.P(
-            children="Analyze the behavior of avocado prices"
-            " and the number of avocados sold in the US"
-            " between 2015 and 2018",
+            children="Jørgen og Eivinds bidrag til The Challenge",
         ),
         dcc.Graph(
             figure={
