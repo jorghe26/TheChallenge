@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.express as px
 import gpxpy
 
-gpx_file = open('Hurtigruten.gpx', 'r')
+gpx_file = open('skitur.gpx', 'r')
 gpx = gpxpy.parse(gpx_file)
 gps_data = gpx.tracks[0].segments[0].points
 df = pd.DataFrame(columns=['lon', 'lat', 'alt', 'time'])
@@ -34,7 +34,7 @@ app.layout = html.Div(
     children=[
         html.H1(children="The Challenge"),
         html.P(
-            children="Jørgen og Eivinds bidrag til The Challenge",
+            children="Jørgens bidrag til The Challenge",
         ),
         dcc.Graph(
             figure={
