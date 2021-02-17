@@ -2,6 +2,14 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
+import gpxpy
+
+gpx_file = open('skitur.gpx', 'r')
+gpx = gpxpy.parse(gpx_file)
+gps_data = gpx.tracks[0].segments[0].points
+df = pd.DataFrame(columns=['lon', 'lat', 'alt', 'time'])
+for point in gps_data:
+    df = df.append({'lon': point.longitude, 'lat' : point.latitude, 'alt' : point.elevation, 'time' : point.time}, ignore_index=True)
 
 data = pd.read_csv("avocado.csv")
 data = data.query("type == 'conventional' and region == 'Albany'")
@@ -21,12 +29,12 @@ app.layout = html.Div(
             figure={
                 "data": [
                     {
-                        "x": data["Date"],
-                        "y": data["AveragePrice"],
+                        "x": df["lon"],
+                        "y": df["lat"],
                         "type": "lines",
                     },
                 ],
-                "layout": {"title": "Average Price of Avocados"},
+                "layout": {"title": "GPS track fra strava"},
             },
         ),
         dcc.Graph(
