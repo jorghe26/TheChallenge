@@ -1,10 +1,10 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-#import pandas as pd
+import pandas as pd
 #import plotly.express as px
-#import gpxpy
-'''
+import gpxpy
+
 gpx_file = open('Hurtigruten.gpx', 'r')
 gpx = gpxpy.parse(gpx_file)
 gps_data = gpx.tracks[0].segments[0].points
@@ -12,8 +12,8 @@ df = pd.DataFrame(columns=['lon', 'lat', 'alt', 'time'])
 for point in gps_data:
     df = df.append({'lon': point.longitude, 'lat' : point.latitude, 'alt' : point.elevation, 'time' : point.time}, ignore_index=True)
 
-fig = px.line_geo(lat=df["lat"], lon=df["lon"])
-'''
+#fig = px.line_geo(lat=df["lat"], lon=df["lon"])
+
 app = dash.Dash(__name__)
 server = app.server
 app.title = "The Challenge"
@@ -24,7 +24,7 @@ app.layout = html.Div(
         html.P(
             children="Jorgens bidrag til The Challenge",
         ),
-        '''dcc.Graph(
+        dcc.Graph(
             figure={
                 "data": [
                     {
@@ -35,7 +35,7 @@ app.layout = html.Div(
                 ],
                 "layout": {"title": "GPS track fra strava"},
             },
-        ),'''
+        ),
         #dcc.Graph(
         #    figure=fig,
         #),
