@@ -9,7 +9,7 @@ gpx_file = open('Hurtigruten.gpx', 'r')
 gpx = gpxpy.parse(gpx_file)
 gps_data = gpx.tracks[0].segments[0].points
 df = pd.DataFrame(columns=['lon', 'lat', 'alt', 'time'])
-i = 0;
+i = 0
 for point in gps_data:
     i = i + 1
     if i == 100:
@@ -26,7 +26,7 @@ app.layout = html.Div(
         html.H1(children="The Challenge",
                 className=".header-title"),
         html.P(
-            children="Jorgens bidrag til The Challenge",
+            children="Jorgens og Lars bidrag til The Challenge",
         ),
         dcc.Graph(
             figure={
