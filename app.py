@@ -23,7 +23,8 @@ app.title = "The Challenge"
 
 app.layout = html.Div(
     children=[
-        html.H1(children="The Challenge"),
+        html.H1(children="The Challenge",
+                className=".header-title"),
         html.P(
             children="Jorgens bidrag til The Challenge",
         ),

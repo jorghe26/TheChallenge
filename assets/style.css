@@ -1,11 +1,12 @@
 body {
-    font-family: sans-serif;
-    margin: 0;
-    background-color: #F7F7F7;
-}
+  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: "Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #fcba03; }
 
 .header {
-    background-color: #222222;
+    background-color: #fcba03;
     height: 256px;
     display: flex;
     flex-direction: column;
@@ -19,7 +20,7 @@ body {
 }
 
 .header-title {
-    color: #FFFFFF;
+    color: #fcba03;
     font-size: 48px;
     font-weight: bold;
     text-align: center;
