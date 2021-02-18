@@ -2,7 +2,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
-import plotly.express as px
+#import plotly.express as px
 import gpxpy
 
 gpx_file = open('Hurtigruten.gpx', 'r')
@@ -12,13 +12,7 @@ df = pd.DataFrame(columns=['lon', 'lat', 'alt', 'time'])
 for point in gps_data:
     df = df.append({'lon': point.longitude, 'lat' : point.latitude, 'alt' : point.elevation, 'time' : point.time}, ignore_index=True)
 
-fig = px.line_geo(lat=df["lat"], lon=df["lon"], projection="orthographic")
-
-data = pd.read_csv("avocado.csv")
-data = data.query("type == 'conventional' and region == 'Albany'")
-data["Date"] = pd.to_datetime(data["Date"], format="%Y-%m-%d")
-data.sort_values("Date", inplace=True)
-
+#fig = px.line_geo(lat=df["lat"], lon=df["lon"])
 
 app = dash.Dash(__name__)
 server = app.server
@@ -42,9 +36,9 @@ app.layout = html.Div(
                 "layout": {"title": "GPS track fra strava"},
             },
         ),
-        dcc.Graph(
-            figure=fig,
-        ),
+        #dcc.Graph(
+        #    figure=fig,
+        #),
     ]
 )
 
