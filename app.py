@@ -9,9 +9,12 @@ gpx_file = open('Hurtigruten.gpx', 'r')
 gpx = gpxpy.parse(gpx_file)
 gps_data = gpx.tracks[0].segments[0].points
 df = pd.DataFrame(columns=['lon', 'lat', 'alt', 'time'])
+i = 0;
 for point in gps_data:
-    df = df.append({'lon': point.longitude, 'lat' : point.latitude, 'alt' : point.elevation, 'time' : point.time}, ignore_index=True)
-
+    i = i + 1
+    if i == 100:
+        df = df.append({'lon': point.longitude, 'lat' : point.latitude, 'alt' : point.elevation, 'time' : point.time}, ignore_index=True)
+        i = 0
 fig = px.line_geo(lat=df["lat"], lon=df["lon"])
 
 app = dash.Dash(__name__)
