@@ -6,6 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from create_df import test_data
 import json
+import random
 
 df = test_data("test.gpx")
 df_2 = test_data("test2.gpx")
@@ -17,6 +18,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 available_indicators = ['track A', 'track B']
+available_plots = ['fuel consumption', 'CO2 emissions']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
@@ -30,28 +32,33 @@ app.layout = html.Div([
             html.P(
                 children="Eivind, Jørgen, and Lars's contribution to DNV GL - The Challenge")]),
     html.Div(
-        html.Div([dcc.Dropdown(
-                id='track',
-                options=[{'label': i, 'value': i} for i in available_indicators],
-                value='track A'
-            ),
-        ], style={'width': '49%', 'display': 'inline-block'}),
+        children=[
+            html.Div([dcc.Dropdown(
+                    id='track',
+                    options=[{'label': i, 'value': i} for i in available_indicators],
+                    value='track A'
+                ),
+            ],style={'width': '20%', 'display': 'inline-block'}),
+            html.Div([dcc.Dropdown(
+                    id='plot_s',
+                    options=[{'label': i, 'value': i} for i in available_plots],
+                    value='fuel consumption')], style={'width': '20%', 'display': 'inline-block', 'float': 'right'}),],
         style={
             'borderBottom': 'thin lightgrey solid',
             'backgroundColor': 'rgb(250, 250, 250)',
-            'padding': '10px 5px'}
+            'padding': '10px 5px'},
     ),
     html.Div([
         dcc.Graph(
             id='map_plot',
             hoverData={'points': [{'customdata': [df['ballast_water'][0],
                                                   df['fuel_rem'][0],
-                                                  df['fuel_con']]}]}
+                                                  df['fuel_con'][0]]}]}
         )
-    ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 20'}),
+    ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 20 20 20'}),
     html.Div([
-        dcc.Graph(id='bar_plot'),
         dcc.Graph(id='graph_plot'),
+        dcc.Graph(id='bar_plot'),
     ], style={'display': 'inline-block', 'width': '49%'}),
 
     html.Div([
@@ -104,13 +111,14 @@ def update_graph(hoverData):
     y = hoverData['points'][0]['customdata'][-1]
     x = list(range(0, len(y)))
     x_rev = x[::-1]
-    y_upper = [ye + 0.7 for ye in y]
-    y_lower = [ye - 0.7 for ye in y]
+    y_upper = [ye + random.randint(1,4) for ye in y]
+    y_lower = [ye - random.randint(1,4) for ye in y]
+    y_lower = y_lower[::-1]
 
     fig_fuel = go.Figure()
     fig_fuel.update_layout(height=225, margin={'l': 20, 'b': 30, 'r': 10, 't': 10},
                            yaxis_title="Fuel consumption (g/kWh)",
-                           xaxis_title="timestamp")
+                           xaxis_title="Last 5 min (s)")
 
     fig_fuel.add_trace(go.Scatter(
         x=x + x_rev,
@@ -119,7 +127,7 @@ def update_graph(hoverData):
         fillcolor='rgba(0,100,80,0.2)',
         line_color='rgba(255,255,255,0)',
         showlegend=False,
-        name='Fair',
+        name='Confidence interval',
     ))
     fig_fuel.add_trace(go.Scatter(
         x=x, y=y,

@@ -16,7 +16,7 @@ def test_data(gpx_filename):
 
     for point in gps_data:
         df = df.append({'lon': point.longitude, 'lat': point.latitude, 'time': point.time,
-                       'fuel_con': randomWalk(170, 100), 'ballast_water': random.randint(100, 300),
+                       'fuel_con': randomWalk(170, 300), 'ballast_water': random.randint(100, 300),
                         'fuel_rem': random.randint(10, 200)}, ignore_index=True)
         i+=1
     return df
