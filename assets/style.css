@@ -3,10 +3,10 @@ body {
   line-height: 1.6;
   font-weight: 400;
   font-family: "Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #fcba03; }
+  color: #000000; }
 
 .header {
-    background-color: #fcba03;
+    background-color: #000000;
     height: 256px;
     display: flex;
     flex-direction: column;
@@ -20,7 +20,7 @@ body {
 }
 
 .header-title {
-    color: #fcba03;
+    color: #000000;
     font-size: 48px;
     font-weight: bold;
     text-align: center;
