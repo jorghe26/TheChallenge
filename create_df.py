@@ -2,6 +2,8 @@ import gpxpy
 import pandas as pd
 import random
 from randomWalk import randomWalk
+import numpy as np
+from fuel import fuelRemaining
 
 
 def test_data(gpx_filename):
@@ -14,10 +16,13 @@ def test_data(gpx_filename):
     fc = randomWalk(170, len(gps_data))
     i = 0
 
+    max_time = len(gps_data)
+
     for point in gps_data:
+        fuel_rem = fuelRemaining(i,max_time)
         df = df.append({'lon': point.longitude, 'lat': point.latitude, 'time': point.time,
                        'fuel_con': randomWalk(170, 300), 'ballast_water': random.randint(100, 300),
-                        'fuel_rem': random.randint(10, 200)}, ignore_index=True)
+                        'fuel_rem': fuel_rem}, ignore_index=True)
         i+=1
     return df
 
