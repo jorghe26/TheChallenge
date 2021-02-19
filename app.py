@@ -8,8 +8,8 @@ from create_df import test_data
 import json
 import random
 
-numData=100     #Number off data in plot
-numN=5          #Number of data between each position
+numData=300     #Number off data in plot
+numN=20          #Number of data between each position
 df = test_data("test.gpx",numData,numN)
 df_2 = test_data("test2.gpx",numData,numN)
 
