@@ -1,4 +1,4 @@
-def randomWalk(fuel_consumption):
+def randomWalk(fuel_consumption,steps):
     
     import random 
     import numpy as np 
@@ -7,7 +7,7 @@ def randomWalk(fuel_consumption):
     from itertools import cycle
     from mpl_toolkits.mplot3d import Axes3D
     dims = 1
-    step_n = 10000
+    step_n = steps
     step_set = [-1, 0, 1]
     origin = np.zeros((1,dims))
 
@@ -18,4 +18,4 @@ def randomWalk(fuel_consumption):
 
     return path
 
-randomWalk(180)
+#randomWalk(180)

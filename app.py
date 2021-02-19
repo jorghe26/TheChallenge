@@ -5,30 +5,29 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from create_df import test_data
+from randomWalk import randomWalk
 
 df = test_data("test.gpx")
-
 fig = px.line_geo(lat=df["lat"], lon=df["lon"])
-
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
 fig_map = px.line_mapbox(lon=df['lon'], lat=df['lat'], zoom=2)
 fig_map.update_layout(mapbox_style="stamen-terrain", mapbox_zoom=3, mapbox_center_lat = 61,
     margin={"r":0,"t":0,"l":0,"b":0})
-fig_bar = px.bar(x=['fuel consumption', 'fuel remaining'], y=[df['fuel_con'][0], df['ballast_water'][0]])
-fig_bar.update_layout(height=225, margin={'l': 20, 'b': 30, 'r': 10, 't': 10})
+#fig_bar = px.bar(x=['fuel consumption', 'fuel remaining'], y=[df['fuel_con'][0], df['ballast_water'][0]])
+fig_bar = px.bar(x=['fuel consumption']*len(df), y=df['fuel_con'],animation_frame=list(range(0,len(df))),range_y=[0,20])
+fig_bar.update_layout(height=425, margin={'l': 20, 'b': 30, 'r': 10, 't': 10})
 fig_fuel = go.Figure()
 fig_fuel.update_layout(height=225, margin={'l': 20, 'b': 30, 'r': 10, 't': 10},yaxis_title="Fuel consumption (g/kWh)",
                        xaxis_title="timestamp")
 
-x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-x_rev = x[::-1]
 
-y = [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5]
-y_upper = [5.5, 3, 5.5, 8, 6, 3, 8, 5, 6, 5.5]
-y_lower = [4.5, 2, 4.4, 7, 4, 2, 7, 4, 5, 4.75]
+y = df['fuel_con']
+x = list(range(0,len(y)))
+x_rev = x[::-1]
+y_upper = [ye + 0.7 for ye in y]
+y_lower = [ye - 0.7 for ye in y]
 y_lower = y_lower[::-1]
 
 fig_fuel.add_trace(go.Scatter(
@@ -49,11 +48,11 @@ fig_fuel.add_trace(go.Scatter(
 ))
 fig_fuel.update_traces(mode='lines')
 
+fig_fuel.update_layout(hovermode="x")
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 app.title = "The Challenge"
-
 app.layout = html.Div([
     html.Div(
         children=[
@@ -73,6 +72,7 @@ app.layout = html.Div([
     ], style={'display': 'inline-block', 'width': '49%'}),
 
 ])
+
 
 if __name__ == "__main__":
     app.run_server(debug=True)
