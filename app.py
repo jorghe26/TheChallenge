@@ -8,8 +8,10 @@ from create_df import test_data
 import json
 import random
 
-df = test_data("test.gpx")
-df_2 = test_data("test2.gpx")
+numData=100     #Number off data in plot
+numN=5          #Number of data between each position
+df = test_data("test.gpx",numData,numN)
+df_2 = test_data("test2.gpx",numData,numN)
 
 #fig = px.line_geo(lat=df["lat"], lon=df["lon"])
 
@@ -53,7 +55,7 @@ app.layout = html.Div([
             id='map_plot',
             hoverData={'points': [{'customdata': [df['ballast_water'][0],
                                                   df['fuel_rem'][0],
-                                                  df['fuel_con'][0]]}]}
+                                                  df['fuel_con'][0],df['counter'][0]]}]}
         )
     ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 20 20 20'}),
     html.Div([
@@ -87,7 +89,7 @@ def update_map_graph(track):
         dff = df
     else:
         dff = df_2
-    fig_map = px.line_mapbox(dff,lon=dff['lon'], lat=dff['lat'], custom_data=['ballast_water', 'fuel_rem', 'fuel_con'],zoom=2)
+    fig_map = px.line_mapbox(dff,lon=dff['lon'], lat=dff['lat'], custom_data=['ballast_water', 'fuel_rem', 'fuel_con','counter'],zoom=2)
     fig_map.update_layout(mapbox_style="stamen-terrain", mapbox_zoom=2, mapbox_center_lat=61,
                           margin={"r": 0, "t": 0, "l": 0, "b": 0})
     return fig_map
@@ -103,16 +105,26 @@ def update_bar_graph(hoverData):
     fig_bar.update_yaxes(range=[0, 350])
     return fig_bar
 
-
+dl=df
+y_u=[]
+y_l=[]
+for i in range(len(dl)*numN):
+    y_u.append(random.randint(1,4))
+    y_l.append(random.randint(1,4))
+y_u.extend([1]*(numData-numN))
+y_l.extend([1]*(numData-numN))
 @app.callback(
     dash.dependencies.Output('graph_plot', 'figure'),
     dash.dependencies.Input('map_plot', 'hoverData'))
 def update_graph(hoverData):
-    y = hoverData['points'][0]['customdata'][-1]
+    yy= hoverData['points'][0]['customdata']
+    y = yy[-2]
+    #print(yy[-1])
+    #print(hoverData['points'][0]['customdata'][-4])
     x = list(range(0, len(y)))
     x_rev = x[::-1]
-    y_upper = [ye + random.randint(1,4) for ye in y]
-    y_lower = [ye - random.randint(1,4) for ye in y]
+    y_upper = [ye + y_u[j] for ye,j in zip(y,range(yy[-1]*numN,yy[-1]*numN+numData))]
+    y_lower = [ye - y_l[j] for ye,j in zip(y,range(yy[-1]*numN,yy[-1]*numN+numData))]
     y_lower = y_lower[::-1]
 
     fig_fuel = go.Figure()
