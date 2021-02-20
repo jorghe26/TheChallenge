@@ -8,8 +8,13 @@ from create_df import test_data
 import json
 import random
 
-df = test_data("test.gpx")
-df_2 = test_data("test2.gpx")
+
+numDataF=300    #Number off data in plot, fuel
+numNF=20        #Number of data between each position, fuel
+numDataC=60     #CO2
+numNC=5         #CO2
+df = test_data("test.gpx",numDataF,numNF,numDataC,numNC)
+df_2 = test_data("test2.gpx",numDataF,numNF,numDataC,numNC)
 
 # fig = px.line_geo(lat=df["lat"], lon=df["lon"])
 
@@ -30,7 +35,7 @@ app.layout = html.Div([
             html.H1(children="The Challenge",
                     className=".header-title"),
             html.P(
-                children="Eivind, Jørgen, and Lars's contribution to DNV GL - The Challenge")]),
+                children="Eivzzind, Jørgen, and Lars's contribution to DNV GL - The Challenge")]),
     html.Div(
         children=[
             html.Div([dcc.Dropdown(
@@ -58,7 +63,8 @@ app.layout = html.Div([
                                                   df['waste'][0],
                                                   df['lubricant'][0],
                                                   df['CO2'][0],
-                                                  df['fuel_con'][0]],
+                                                  df['fuel_con'][0],
+                                                  df['counter'][0]]
                                    }
                                   ]
                        }
@@ -90,7 +96,7 @@ def update_map_graph(track):
         dff = df_2
     fig_map = px.line_mapbox(dff, lon=dff['lon'], lat=dff['lat'], custom_data=['ballast_water', 'fuel_rem',
                                                                                'grey_water', 'fresh_water', 'waste',
-                                                                               'lubricant', 'CO2', 'fuel_con'], zoom=2)
+                                                                               'lubricant', 'CO2', 'fuel_con','counter'], zoom=2)
     fig_map.update_layout(mapbox_style="stamen-terrain", mapbox_zoom=2, mapbox_center_lat=61,
                           margin={"r": 0, "t": 0, "l": 0, "b": 0})
     return fig_map
@@ -100,12 +106,28 @@ def update_map_graph(track):
     dash.dependencies.Output('bar_plot', 'figure'),
     dash.dependencies.Input('map_plot', 'hoverData'))
 def update_bar_graph(hoverData):
-    y_data = hoverData['points'][0]['customdata'][:-2]
+    y_data = hoverData['points'][0]['customdata'][:-3]
     fig_bar = px.bar(x=['ballast_water', 'fuel_rem', 'grey_water', 'fresh_water', 'waste', 'lubricant'], y=y_data)
     fig_bar.update_layout(height=225, margin={'l': 20, 'b': 30, 'r': 10, 't': 10}, showlegend=False, xaxis_title='',
                           yaxis_title='Amount loaded (liter)')
     fig_bar.update_yaxes(range=[0, 350])
     return fig_bar
+
+dl=df
+y_u=[]
+y_l=[]
+y_u2=[]
+y_l2=[]
+for i in range(len(dl)*numNF):
+    y_u.append(random.randint(1,4))
+    y_l.append(random.randint(1,4))
+for i in range(len(dl)*numNF):
+    y_u2.append(random.randint(1,4))
+    y_l2.append(random.randint(1,4))
+y_u.extend([1]*(numDataF-numNF))
+y_l.extend([1]*(numDataF-numNF))
+y_u2.extend([1]*(numDataC-numNC))
+y_l2.extend([1]*(numDataC-numNC))
 
 
 @app.callback(
@@ -115,11 +137,12 @@ def update_bar_graph(hoverData):
 def update_graph(hoverData, plot_s):
     if plot_s == 'fuel consumption':
 
-        y = hoverData['points'][0]['customdata'][-1]
+        yy = hoverData['points'][0]['customdata']
+        y=yy[-2]
         x = list(range(0, len(y)))
         x_rev = x[::-1]
-        y_upper = [ye + random.randint(1, 4) for ye in y]
-        y_lower = [ye - random.randint(1, 4) for ye in y]
+        y_upper = [ye + y_u[j] for ye,j in zip(y,range(yy[-1]*numNF,yy[-1]*numNF+numDataF))]
+        y_lower = [ye - y_l[j] for ye,j in zip(y,range(yy[-1]*numNF,yy[-1]*numNF+numDataF))]
         y_lower = y_lower[::-1]
 
         fig_fuel = go.Figure()
@@ -144,11 +167,12 @@ def update_graph(hoverData, plot_s):
         ))
         fig_fuel.update_traces(mode='lines')
     else:
-        y = hoverData['points'][0]['customdata'][-2]
+        yy = hoverData['points'][0]['customdata']
+        y=yy[-3]
         x = list(range(0, len(y)))
         x_rev = x[::-1]
-        y_upper = [ye + random.randint(1, 2) for ye in y]
-        y_lower = [ye - random.randint(1, 2) for ye in y]
+        y_upper = [ye + y_u2[j] for ye,j in zip(y,range(yy[-1]*numNC,yy[-1]*numNC+numDataC))]
+        y_lower = [ye - y_l2[j] for ye,j in zip(y,range(yy[-1]*numNC,yy[-1]*numNC+numDataC))]
         y_lower = y_lower[::-1]
 
         fig_fuel = go.Figure()
@@ -174,7 +198,6 @@ def update_graph(hoverData, plot_s):
         fig_fuel.update_traces(mode='lines')
 
     return fig_fuel
-
 
 if __name__ == "__main__":
     app.run_server(debug=True)
