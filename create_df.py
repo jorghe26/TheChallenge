@@ -31,7 +31,7 @@ def test_data(gpx_filename,numDataF,numNF,numDataC,numNC):
                        'fuel_con': fc[i*numNF:i*numNF+numDataF], 'ballast_water': random.randint(100, 400),
                         'grey_water': random.randint(30,50),'waste': random.randint(1, 30),
                         'fresh_water': random.randint(60,110), 'lubricant': random.randint(10, 45),
-                        'fuel_rem': fuel_rem, 'CO2': fc[i*numNC:i*numNC+numDataC],'counter': i}, ignore_index=True)
+                        'fuel_rem': fuel_rem, 'CO2': fc2[i*numNC:i*numNC+numDataC],'counter': i}, ignore_index=True)
         i+=1
     return df
 

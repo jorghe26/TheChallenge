@@ -8,7 +8,7 @@ from create_df import test_data
 import json
 import random
 
-
+                #numData and numN has to be dividable
 numDataF=300    #Number off data in plot, fuel
 numNF=20        #Number of data between each position, fuel
 numDataC=60     #CO2
@@ -35,7 +35,7 @@ app.layout = html.Div([
             html.H1(children="The Challenge",
                     className=".header-title"),
             html.P(
-                children="Eivzzind, Jørgen, and Lars's contribution to DNV GL - The Challenge")]),
+                children="Eivind, Jørgen, and Lars's contribution to DNV GL - The Challenge")]),
     html.Div(
         children=[
             html.Div([dcc.Dropdown(
@@ -121,7 +121,7 @@ y_l2=[]
 for i in range(len(dl)*numNF):
     y_u.append(random.randint(1,4))
     y_l.append(random.randint(1,4))
-for i in range(len(dl)*numNF):
+for i in range(len(dl)*numNC):
     y_u2.append(random.randint(1,4))
     y_l2.append(random.randint(1,4))
 y_u.extend([1]*(numDataF-numNF))
@@ -139,6 +139,17 @@ def update_graph(hoverData, plot_s):
 
         yy = hoverData['points'][0]['customdata']
         y=yy[-2]
+
+        count=yy[-1]
+        g=numDataF/numNF
+        if count+g>len(df)-1:
+            count=len(df)-1
+        else:
+            count=count+g
+        lon1=df['lon'][yy[-1]]
+        lat1=df['lat'][yy[-1]]
+        lon2=df['lon'][count]
+        lat2=df['lat'][count]
         x = list(range(0, len(y)))
         x_rev = x[::-1]
         y_upper = [ye + y_u[j] for ye,j in zip(y,range(yy[-1]*numNF,yy[-1]*numNF+numDataF))]
@@ -148,8 +159,8 @@ def update_graph(hoverData, plot_s):
         fig_fuel = go.Figure()
         fig_fuel.update_layout(height=225, margin={'l': 20, 'b': 30, 'r': 10, 't': 10},
                                yaxis_title="Fuel consumption (g/kWh)",
-                               xaxis_title="Last 5 min (s)")
-
+                               xaxis_title="From current positin (lat: "+str(format(lat1,'.1f'))+", lon: "+str(format(lon1,'.1f'))+") to (lat: "+str(format(lat2,'.1f'))+", lon: "+str(format(lon2,'.1f'))+")\nDuration of interval(h:m:s): "+str(df['time'][count]-df['time'][yy[-1]]))
+        #print(df['time'][yy[-1]+1]-df['time'][yy[-1]])
         fig_fuel.add_trace(go.Scatter(
             x=x + x_rev,
             y=y_upper + y_lower,
