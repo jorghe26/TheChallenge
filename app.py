@@ -7,9 +7,13 @@ import plotly.graph_objects as go
 from create_df import test_data
 import json
 import random
+import numpy as np
 
 df = test_data("test.gpx")
 df_2 = test_data("test2.gpx")
+arr = np.genfromtxt('./one_third_octave',delimiter=',')
+arr = arr.T
+df_3 = pd.DataFrame(arr)
 
 # fig = px.line_geo(lat=df["lat"], lon=df["lon"])
 
@@ -18,7 +22,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 available_indicators = ['track A', 'track B']
-available_plots = ['fuel consumption', 'CO2 emissions']
+available_plots = ['fuel consumption', 'CO2 emissions','noise measurements']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
@@ -143,6 +147,10 @@ def update_graph(hoverData, plot_s):
             showlegend=False,
         ))
         fig_fuel.update_traces(mode='lines')
+    elif plot_s == 'noise measurement':
+        x = df_3[0]
+        y = df_3[1]
+            
     else:
         y = hoverData['points'][0]['customdata'][-2]
         x = list(range(0, len(y)))
