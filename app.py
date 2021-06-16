@@ -105,7 +105,7 @@ def update_map_graph(track):
     dash.dependencies.Input('map_plot', 'hoverData'))
 def update_bar_graph(hoverData):
     y_data = hoverData['points'][0]['customdata'][:-2]
-    fig_bar = px.bar(x=['ballast_water', 'fuel_rem', 'grey_water', 'fresh_water', 'waste', 'lubricant'], y=y_data)
+    fig_bar = px.bar(x=['noise_level', 'fuel_rem', 'grey_water', 'fresh_water', 'waste', 'lubricant'], y=y_data)
     fig_bar.update_layout(height=225, margin={'l': 20, 'b': 30, 'r': 10, 't': 10}, showlegend=False, xaxis_title='',
                           yaxis_title='Amount loaded (liter)')
     fig_bar.update_yaxes(range=[0, 350])
@@ -147,10 +147,26 @@ def update_graph(hoverData, plot_s):
             showlegend=False,
         ))
         fig_fuel.update_traces(mode='lines')
-    elif plot_s == 'noise measurement':
+    elif plot_s == 'noise measurements':
         x = df_3[0]
         y = df_3[1]
-            
+        fig_fuel = go.Figure()
+        fig_fuel.update_layout(height=225, margin={'l': 20, 'b': 30, 'r': 10, 't': 10},
+                               yaxis_title="Sound level (dB)",
+                               xaxis_title="One third ocaves (Hz)",
+                               xaxis_type="log" )
+        fig_fuel.add_trace(go.Scatter(
+            line_color='rgba(255,255,255,0)',
+            showlegend=False,
+            name='Noise measurements',
+        ))
+        fig_fuel.add_trace(go.Scatter(
+            x=x, y=y,
+            line_color='rgb(0,100,80)',
+            name='noise measurement',
+            showlegend=False,
+        ))
+        fig_fuel.update_traces(mode='lines')                       
     else:
         y = hoverData['points'][0]['customdata'][-2]
         x = list(range(0, len(y)))
